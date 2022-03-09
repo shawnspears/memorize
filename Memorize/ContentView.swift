@@ -9,14 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     var emojis = ["🚲","🚂", "🚀", "🚁", "🚜", "🚕", "🏎", "🚑", "🚓", "🚒", "✈️", "⛵️", "🛸", "🛶", "🚌", "🏍", "🛵", "🛴", "🚗", "🚙", "🚐", "🚛", "🚚", "🛻"]
-    @State var emojiCount = 6
+    @State var emojiCount = 24
     var body: some View {
         VStack {
-            HStack {
-                ForEach(emojis[0..<emojiCount], id: \.self, content: { emoji in
-                    CardView(content: emoji)
-                })
+            ScrollView{
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 75))]) {
+                    ForEach(emojis[0..<emojiCount], id: \.self, content: { emoji in
+                        CardView(content: emoji).aspectRatio(2/3, contentMode: .fit)
+                    })
+                }
             }
+            .foregroundColor(.red)
+            Spacer()
             HStack{
                 remove
                 Spacer()
@@ -26,27 +30,26 @@ struct ContentView: View {
             .padding(.horizontal)
         }
         .padding(.horizontal)
-        .foregroundColor(.red)
     }
     
     var remove: some View {
-        Button(action: {
+        Button {
             if emojiCount > 1 {
                 emojiCount -= 1
             }
-        }, label: {
+        } label: {
             Image(systemName: "minus.circle")
-        })
+        }
     }
     
     var add: some View {
-        Button(action: {
+        Button {
             if emojiCount < emojis.count {
                 emojiCount += 1
             }
-        }, label: {
+        } label: {
             Image(systemName: "plus.circle")
-        })
+        }
     }
 }
 
@@ -58,8 +61,8 @@ struct CardView: View {
         ZStack {
             let shape = RoundedRectangle(cornerRadius: 20)
             if isFaceUp {
-                shape.stroke(lineWidth: 3)
                 shape.fill().foregroundColor(.white)
+                shape.strokeBorder(lineWidth: 3)
                 Text(content).font(.largeTitle)
             } else {
                 shape.fill()
@@ -77,5 +80,6 @@ struct ContentView_Previews: PreviewProvider {
             .preferredColorScheme(.dark)
         ContentView()
             .preferredColorScheme(.light)
+.previewInterfaceOrientation(.landscapeLeft)
     }
 }
